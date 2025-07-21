@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#4CAF50" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icons/icon-192.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chicken Inventory App</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4CAF50"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     .tab { display: none; }
@@ -18,14 +17,12 @@
     th, td { padding: 8px; text-align: center; }
     button { padding: 5px 10px; margin: 2px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
 
-    /* Mobile responsiveness */
+    /* Responsive tables */
     @media (max-width: 600px) {
       table, thead, tbody, th, td, tr {
         display: block;
       }
-      thead tr {
-        display: none;
-      }
+      thead tr { display: none; }
       td {
         position: relative;
         padding-left: 50%;
@@ -124,15 +121,12 @@
   </div>
 
   <script src="script.js"></script>
-
   <script>
-  if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log('✅ Service Worker registered.'))
-    .catch(err => console.error('❌ SW registration failed:', err));
-}
-  }
-</script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker Registered'))
+        .catch(err => console.error('SW registration failed:', err));
+    }
+  </script>
 </body>
 </html>
-
