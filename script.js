@@ -1,160 +1,141 @@
-function showTab(tabId) {
+let expenses = [];
+let headCount = { starting: 0, casualties: 0 };
+let orders = [];
+let editingOrderIndex = -1;
+
+function showTab(id) {
   document.querySelectorAll('.tab').forEach(tab => tab.style.display = 'none');
-  document.getElementById(tabId).style.display = 'block';
-  updateTables();
+  document.getElementById(id).style.display = 'block';
+  if (id === 'view') updateTables();
 }
 
-let expenses = JSON.parse(localStorage.getItem('expenses') || '[]');
-let headCount = JSON.parse(localStorage.getItem('headCount') || '{}');
-let orders = JSON.parse(localStorage.getItem('orders') || '[]');
-
-window.onload = () => {
-  document.getElementById('expensesForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    addExpense();
-    this.reset();
-  });
-
-  document.getElementById('headCountForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    saveHeadCount();
-    this.reset();
-  });
-
-  document.getElementById('ordersForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    addCustomerOrder();
-    this.reset();
-  });
-
-  showTab('expenses');
-};
-
-function addExpense() {
+document.getElementById('expensesForm').addEventListener('submit', function(e) {
+  e.preventDefault();
   const product = document.getElementById('productName').value;
-  const amount = parseFloat(document.getElementById('amount').value);
-  const price = parseFloat(document.getElementById('price').value);
+  const amount = +document.getElementById('amount').value;
+  const price = +document.getElementById('price').value;
   expenses.push({ product, amount, price });
-  localStorage.setItem('expenses', JSON.stringify(expenses));
+  this.reset();
   updateTables();
-}
+});
 
-function saveHeadCount() {
-  headCount.start = parseInt(document.getElementById('starting').value);
-  headCount.casualties = parseInt(document.getElementById('casualties').value);
-  localStorage.setItem('headCount', JSON.stringify(headCount));
+document.getElementById('headCountForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  headCount.starting = +document.getElementById('starting').value;
+  headCount.casualties = +document.getElementById('casualties').value;
+  this.reset();
   updateTables();
-}
+});
 
-function addCustomerOrder() {
+document.getElementById('ordersForm').addEventListener('submit', function(e) {
+  e.preventDefault();
   const name = document.getElementById('customerName').value;
   const location = document.getElementById('location').value;
-  const orderAmount = parseInt(document.getElementById('orderAmount').value);
-  const pricePerHead = parseFloat(document.getElementById('pricePerHead').value);
-  const payment = parseFloat(document.getElementById('payment').value);
-  orders.push({ name, location, orderAmount, pricePerHead, payment });
-  localStorage.setItem('orders', JSON.stringify(orders));
+  const amount = +document.getElementById('orderAmount').value;
+  const pricePerHead = +document.getElementById('pricePerHead').value;
+  const payment = +document.getElementById('payment').value;
+  const order = { name, location, amount, pricePerHead, payment };
+
+  if (editingOrderIndex > -1) {
+    orders[editingOrderIndex] = order;
+    editingOrderIndex = -1;
+    document.getElementById('editOrder').style.display = 'none';
+  } else {
+    orders.push(order);
+  }
+
+  this.reset();
   updateTables();
+});
+
+function updateTables() {
+  // Expenses Table
+  const expTbody = document.querySelector('#expensesTable tbody');
+  expTbody.innerHTML = '';
+  let totalExpenses = 0;
+  expenses.forEach((e, i) => {
+    const row = expTbody.insertRow();
+    row.innerHTML = `
+      <td>${e.product}</td>
+      <td>${e.amount}</td>
+      <td>${e.price}</td>
+      <td>${(e.amount * e.price).toFixed(2)}</td>
+      <td>
+        <button onclick="editExpense(${i})">Edit</button>
+        <button onclick="deleteExpense(${i})">Delete</button>
+      </td>
+    `;
+    totalExpenses += e.amount * e.price;
+  });
+
+  let tfoot = document.querySelector('#expensesTable tfoot');
+  tfoot.innerHTML = `<tr><td colspan="5"><strong>Total: ${totalExpenses.toFixed(2)}</strong></td></tr>`;
+
+  // Head Count Summary
+  const totalOrders = orders.reduce((sum, o) => sum + o.amount, 0);
+  const remaining = headCount.starting - headCount.casualties - totalOrders;
+
+  document.getElementById('viewStarting').textContent = headCount.starting;
+  document.getElementById('viewCasualties').textContent = headCount.casualties;
+  document.getElementById('viewOrders').textContent = totalOrders;
+  document.getElementById('viewRemaining').textContent = remaining;
+
+  // Orders Table
+  const orderTbody = document.querySelector('#ordersTable tbody');
+  orderTbody.innerHTML = '';
+  orders.forEach((o, i) => {
+    const balance = (o.amount * o.pricePerHead) - o.payment;
+    const status = balance <= 0 ? "Fully Paid" : balance.toFixed(2);
+    const row = orderTbody.insertRow();
+    row.innerHTML = `
+      <td>${o.name}</td>
+      <td>${o.location}</td>
+      <td>${o.amount}</td>
+      <td>${o.pricePerHead}</td>
+      <td>${o.payment}</td>
+      <td>${status}</td>
+      <td>
+        <button onclick="editOrder(${i})">Edit</button>
+        <button onclick="deleteOrder(${i})">Delete</button>
+      </td>
+    `;
+  });
 }
 
-function deleteExpense(index) {
-  expenses.splice(index, 1);
-  localStorage.setItem('expenses', JSON.stringify(expenses));
-  updateTables();
-}
-
-function editExpense(index) {
-  const e = expenses[index];
+function editExpense(i) {
+  const e = expenses[i];
   document.getElementById('productName').value = e.product;
   document.getElementById('amount').value = e.amount;
   document.getElementById('price').value = e.price;
-  deleteExpense(index);
+  expenses.splice(i, 1);
   showTab('expenses');
 }
 
-function deleteOrder(index) {
-  orders.splice(index, 1);
-  localStorage.setItem('orders', JSON.stringify(orders));
+function deleteExpense(i) {
+  expenses.splice(i, 1);
   updateTables();
 }
 
-function editOrder(index) {
-  const o = orders[index];
-  document.getElementById('customerName').value = o.name;
-  document.getElementById('location').value = o.location;
-  document.getElementById('orderAmount').value = o.orderAmount;
-  document.getElementById('pricePerHead').value = o.pricePerHead;
-  document.getElementById('payment').value = o.payment;
-  deleteOrder(index);
-  showTab('orders');
-}
-
 function editHeadCount() {
-  document.getElementById('starting').value = headCount.start || '';
-  document.getElementById('casualties').value = headCount.casualties || '';
+  document.getElementById('starting').value = headCount.starting;
+  document.getElementById('casualties').value = headCount.casualties;
   showTab('expenses');
 }
 
-function updateTables() {
-  // Expenses
-  const expenseBody = document.querySelector('#expensesTable tbody');
-  expenseBody.innerHTML = '';
-  let total = 0;
-  expenses.forEach((e, index) => {
-    total += e.amount * e.price;
-    expenseBody.innerHTML += `
-      <tr>
-        <td>${e.product}</td>
-        <td>${e.amount}</td>
-        <td>${e.price}</td>
-        <td>${(e.amount * e.price).toFixed(2)}</td>
-        <td>
-          <button onclick="editExpense(${index})">Edit</button>
-          <button onclick="deleteExpense(${index})">Delete</button>
-        </td>
-      </tr>`;
-  });
-  document.querySelector('#expensesTable tfoot').innerHTML =
-    `<tr><td colspan="5"><strong>Total: ${total.toFixed(2)}</strong></td></tr>`;
+function editOrder(i) {
+  const o = orders[i];
+  document.getElementById('customerName').value = o.name;
+  document.getElementById('location').value = o.location;
+  document.getElementById('orderAmount').value = o.amount;
+  document.getElementById('pricePerHead').value = o.pricePerHead;
+  document.getElementById('payment').value = o.payment;
+  editingOrderIndex = i;
+  document.getElementById('editOrder').style.display = 'block';
+  showTab('orders');
+}
 
-  // Headcount
-  const headTable = document.querySelector('#headCountTable tbody');
-  headTable.innerHTML = '';
-  if (headCount.start !== undefined && headCount.casualties !== undefined) {
-    headTable.innerHTML = `
-      <tr>
-        <td>${headCount.start}</td>
-        <td>${headCount.casualties}</td>
-        <td><button onclick="editHeadCount()">Edit</button></td>
-      </tr>`;
-  }
-
-  // Orders
-  const orderBody = document.querySelector('#ordersTable tbody');
-  orderBody.innerHTML = '';
-  let totalOrdered = 0;
-  orders.forEach((o, index) => {
-    totalOrdered += o.orderAmount;
-    const balance = o.orderAmount * o.pricePerHead - o.payment;
-    orderBody.innerHTML += `
-      <tr>
-        <td>${o.name}</td>
-        <td>${o.location}</td>
-        <td>${o.orderAmount}</td>
-        <td>${o.pricePerHead}</td>
-        <td>${o.payment}</td>
-        <td>${balance <= 0 ? "Fully Paid" : balance.toFixed(2)}</td>
-        <td>
-          <button onclick="editOrder(${index})">Edit</button>
-          <button onclick="deleteOrder(${index})">Delete</button>
-        </td>
-      </tr>`;
-  });
-
-  // Update headcount summary
-  if (document.getElementById('totalOrdered')) {
-    document.getElementById('totalOrdered').innerText = totalOrdered;
-    const remaining = (headCount.start || 0) - (headCount.casualties || 0) - totalOrdered;
-    document.getElementById('remainingChickens').innerText = remaining >= 0 ? remaining : 0;
-  }
+function cancelEditOrder() {
+  editingOrderIndex = -1;
+  document.getElementById('editOrder').style.display = 'none';
+  document.getElementById('ordersForm').reset();
 }
