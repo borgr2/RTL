@@ -34,11 +34,7 @@
         white-space: nowrap;
         font-weight: bold;
       }
-      td:nth-of-type(1)::before { content: "Product"; }
-      td:nth-of-type(2)::before { content: "Amount"; }
-      td:nth-of-type(3)::before { content: "Price"; }
-      td:nth-of-type(4)::before { content: "Total"; }
-      td:nth-of-type(5)::before { content: "Actions"; }
+      td:nth-of-type(1)::before { content: attr(data-label); }
     }
   </style>
 </head>
@@ -90,10 +86,18 @@
       <tfoot></tfoot>
     </table>
 
-    <h2>Head Count and Orders</h2>
+    <h2>Head Count and Orders Summary</h2>
     <table id="headCountTable">
-      <thead><tr><th>Starting</th><th>Casualties</th><th>Orders</th><th>Remaining</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
+      <thead><tr><th>Starting</th><th>Casualties</th><th>Total Orders</th><th>Remaining</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr>
+          <td id="viewStarting">0</td>
+          <td id="viewCasualties">0</td>
+          <td id="viewOrders">0</td>
+          <td id="viewRemaining">0</td>
+          <td><button onclick="editHeadCount()">Edit</button></td>
+        </tr>
+      </tbody>
     </table>
 
     <h2>Customer Orders</h2>
