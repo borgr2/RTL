@@ -1,4 +1,3 @@
-
 function showTab(tabId) {
   document.querySelectorAll('.tab').forEach(tab => tab.style.display = 'none');
   document.getElementById(tabId).style.display = 'block';
@@ -53,12 +52,11 @@ function addCustomerOrder() {
   const orderAmount = parseInt(document.getElementById('orderAmount').value);
   const pricePerHead = parseFloat(document.getElementById('pricePerHead').value);
   const payment = parseFloat(document.getElementById('payment').value);
-  orders.push({ name, location, orderAmount, pricePerHead, payment }); updateTables();
+  orders.push({ name, location, orderAmount, pricePerHead, payment });
   localStorage.setItem('orders', JSON.stringify(orders));
   updateTables();
 }
 
-// Expenses
 function deleteExpense(index) {
   expenses.splice(index, 1);
   localStorage.setItem('expenses', JSON.stringify(expenses));
@@ -74,7 +72,6 @@ function editExpense(index) {
   showTab('expenses');
 }
 
-// Orders
 function deleteOrder(index) {
   orders.splice(index, 1);
   localStorage.setItem('orders', JSON.stringify(orders));
@@ -92,42 +89,35 @@ function editOrder(index) {
   showTab('orders');
 }
 
+function editHeadCount() {
+  document.getElementById('starting').value = headCount.start || '';
+  document.getElementById('casualties').value = headCount.casualties || '';
+  showTab('expenses');
+}
+
 function updateTables() {
-  // Expenses table
+  // Expenses
   const expenseBody = document.querySelector('#expensesTable tbody');
   expenseBody.innerHTML = '';
   let total = 0;
   expenses.forEach((e, index) => {
-    totalOrdered += o.orderAmount;
     total += e.amount * e.price;
     expenseBody.innerHTML += `
-      orderBody.innerHTML += `
-  <tr>
-    <td>${o.name}</td>
-    <td>${o.location}</td>
-    <td>${o.orderAmount}</td>
-    <td>${o.pricePerHead}</td>
-    <td>${o.payment}</td>
-    <td>${
-      (o.orderAmount * o.pricePerHead - o.payment) <= 0
-        ? "Fully Paid"
-        : (o.orderAmount * o.pricePerHead - o.payment).toFixed(2)
-    }</td>
-    <td>
-      <button onclick="editOrder(${index})">Edit</button>
-      <button onclick="deleteOrder(${index})">Delete</button>
-    </td>
-  </tr>`;
-  if (document.getElementById('totalOrdered')) {
-  document.getElementById('totalOrdered').innerText = totalOrdered;
-
-  const remaining = (headCount.start || 0) - (headCount.casualties || 0) - totalOrdered;
-  document.getElementById('remainingChickens').innerText = remaining >= 0 ? remaining : 0;
-}
+      <tr>
+        <td>${e.product}</td>
+        <td>${e.amount}</td>
+        <td>${e.price}</td>
+        <td>${(e.amount * e.price).toFixed(2)}</td>
+        <td>
+          <button onclick="editExpense(${index})">Edit</button>
+          <button onclick="deleteExpense(${index})">Delete</button>
+        </td>
+      </tr>`;
   });
-  document.querySelector('#expensesTable tfoot').innerHTML = `<tr><td colspan="5"><strong>Total: ${total.toFixed(2)}</strong></td></tr>`;
+  document.querySelector('#expensesTable tfoot').innerHTML =
+    `<tr><td colspan="5"><strong>Total: ${total.toFixed(2)}</strong></td></tr>`;
 
-  // Headcount table
+  // Headcount
   const headTable = document.querySelector('#headCountTable tbody');
   headTable.innerHTML = '';
   if (headCount.start !== undefined && headCount.casualties !== undefined) {
@@ -139,10 +129,13 @@ function updateTables() {
       </tr>`;
   }
 
-  // Orders table
+  // Orders
   const orderBody = document.querySelector('#ordersTable tbody');
   orderBody.innerHTML = '';
+  let totalOrdered = 0;
   orders.forEach((o, index) => {
+    totalOrdered += o.orderAmount;
+    const balance = o.orderAmount * o.pricePerHead - o.payment;
     orderBody.innerHTML += `
       <tr>
         <td>${o.name}</td>
@@ -150,16 +143,18 @@ function updateTables() {
         <td>${o.orderAmount}</td>
         <td>${o.pricePerHead}</td>
         <td>${o.payment}</td>
+        <td>${balance <= 0 ? "Fully Paid" : balance.toFixed(2)}</td>
         <td>
           <button onclick="editOrder(${index})">Edit</button>
           <button onclick="deleteOrder(${index})">Delete</button>
         </td>
       </tr>`;
   });
-}
 
-function editHeadCount() {
-  document.getElementById('starting').value = headCount.start || '';
-  document.getElementById('casualties').value = headCount.casualties || '';
-  showTab('expenses');
+  // Update headcount summary
+  if (document.getElementById('totalOrdered')) {
+    document.getElementById('totalOrdered').innerText = totalOrdered;
+    const remaining = (headCount.start || 0) - (headCount.casualties || 0) - totalOrdered;
+    document.getElementById('remainingChickens').innerText = remaining >= 0 ? remaining : 0;
+  }
 }
