@@ -1,0 +1,6 @@
+body { font-family: Arial; padding: 1em; }
+input { margin: 0.2em; padding: 0.4em; }
+button { margin: 0.2em; padding: 0.5em; }
+table, th, td { border: 1px solid #000; border-collapse: collapse; padding: 0.5em; }
+.tabs { margin-bottom: 1em; }
+.tab { display: none; }
