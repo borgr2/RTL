@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chicken Inventory App</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .tab { display: none; }
+    nav button { margin-right: 10px; padding: 10px; }
+    form div { margin: 10px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid black; }
+    th, td { padding: 8px; text-align: center; }
+    button { padding: 5px 10px; margin: 2px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      thead tr {
+        display: none;
+      }
+      td {
+        position: relative;
+        padding-left: 50%;
+      }
+      td::before {
+        position: absolute;
+        top: 0;
+        left: 6px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+      }
+      #headCountTable td:nth-of-type(1)::before { content: "Starting"; }
+      #headCountTable td:nth-of-type(2)::before { content: "Casualties"; }
+      #headCountTable td:nth-of-type(3)::before { content: "Total Orders"; }
+      #headCountTable td:nth-of-type(4)::before { content: "Remaining"; }
+      #headCountTable td:nth-of-type(5)::before { content: "Actions"; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <button onclick="showTab('expenses')">Inventory</button>
+    <button onclick="showTab('orders')">Customer Order</button>
+    <button onclick="showTab('view')">View Data</button>
+  </nav>
+
+  <div id="expenses" class="tab">
+    <h2>Expenses</h2>
+    <form id="expensesForm">
+      <div><label>Product Name: <input type="text" id="productName" required></label></div>
+      <div><label>Amount: <input type="number" id="amount" required></label></div>
+      <div><label>Price: <input type="number" id="price" required></label></div>
+      <button type="submit">Save Expense</button>
+    </form>
+
+    <h2>Head Count</h2>
+    <form id="headCountForm">
+      <div><label>Starting: <input type="number" id="starting" required></label></div>
+      <div><label>Casualties: <input type="number" id="casualties" required></label></div>
+      <button type="submit">Save Head Count</button>
+    </form>
+  </div>
+
+  <div id="orders" class="tab">
+    <h2>Customer Orders</h2>
+    <form id="ordersForm">
+      <div><label>Customer Name: <input type="text" id="customerName" required></label></div>
+      <div><label>Location: <input type="text" id="location" required></label></div>
+      <div><label>Order Amount: <input type="number" id="orderAmount" required></label></div>
+      <div><label>Price per Head: <input type="number" id="pricePerHead" required></label></div>
+      <div><label>Payment: <input type="number" id="payment" required></label></div>
+      <button type="submit">Save Order</button>
+    </form>
+    <div id="editOrder" style="display:none;">
+      <p><strong>Editing Order...</strong></p>
+      <button onclick="cancelEditOrder()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="view" class="tab">
+    <h2>Expenses</h2>
+    <table id="expensesTable">
+      <thead><tr><th>Product</th><th>Amount</th><th>Price</th><th>Total</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+      <tfoot></tfoot>
+    </table>
+
+    <h2>Head Count and Orders Summary</h2>
+    <table id="headCountTable">
+      <thead>
+        <tr>
+          <th>Starting</th>
+          <th>Casualties</th>
+          <th>Total Orders</th>
+          <th>Remaining</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="viewStarting">0</td>
+          <td id="viewCasualties">0</td>
+          <td id="viewOrders">0</td>
+          <td id="viewRemaining">0</td>
+          <td><button onclick="editHeadCount()">Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Customer Orders</h2>
+    <table id="ordersTable">
+      <thead><tr><th>Name</th><th>Location</th><th>Amount</th><th>Price/Head</th><th>Payment</th><th>Balance</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
