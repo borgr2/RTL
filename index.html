@@ -1,61 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chicken Inventory PWA</title>
-  <link rel="manifest" href="manifest.json" />
-  <script defer src="script.js"></script>
-  <link rel="stylesheet" href="style.css" />
+  <title>Chicken Inventory</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <h1>Chicken Inventory Manager</h1>
-
-  <div class="tabs">
+  <nav>
     <button onclick="showTab('expenses')">Inventory</button>
-    <button onclick="showTab('orders')">Customer Orders</button>
-    <button onclick="showTab('readonly')">View Data</button>
-  </div>
+    <button onclick="showTab('orders')">Customer Order</button>
+    <button onclick="showTab('view')">View Data</button>
+  </nav>
 
   <div id="expenses" class="tab">
     <h2>Expenses</h2>
     <form id="expensesForm">
-      <input type="text" id="productName" placeholder="Product Name" required>
-      <input type="number" id="amount" placeholder="Amount" required>
-      <input type="number" id="price" placeholder="Price" required>
+      <input id="productName" placeholder="Product Name" required />
+      <input type="number" id="amount" placeholder="Amount" required />
+      <input type="number" id="price" placeholder="Price" required />
       <button type="submit">Save Expense</button>
     </form>
 
     <h2>Head Count</h2>
     <form id="headCountForm">
-      <input type="number" id="starting" placeholder="Starting Heads" required>
-      <input type="number" id="casualties" placeholder="Casualties" required>
+      <input type="number" id="starting" placeholder="Starting Count" required />
+      <input type="number" id="casualties" placeholder="Casualties" required />
       <button type="submit">Save Head Count</button>
     </form>
-    
-  </div>
-  <div id="headSummary">
-  <p><strong>Total Ordered:</strong> <span id="totalOrdered">0</span></p>
-  <p><strong>Remaining Chickens:</strong> <span id="remainingChickens">0</span></p>
-</div>
 
-  <div id="orders" class="tab">
-    <h2>Customer Orders</h2>
+    <div id="headSummary">
+      <p><strong>Total Ordered:</strong> <span id="totalOrdered">0</span></p>
+      <p><strong>Remaining Chickens:</strong> <span id="remainingChickens">0</span></p>
+    </div>
+  </div>
+
+  <div id="orders" class="tab" style="display:none">
+    <h2>Customer Order</h2>
     <form id="ordersForm">
-      <input type="text" id="customerName" placeholder="Customer Name" required>
-      <input type="text" id="location" placeholder="Location" required>
-      <input type="number" id="orderAmount" placeholder="Order Amount" required>
-      <input type="number" id="pricePerHead" placeholder="Price per Head" required>
-      <input type="number" id="payment" placeholder="Payment" required>
+      <input id="customerName" placeholder="Customer Name" required />
+      <input id="location" placeholder="Location" required />
+      <input type="number" id="orderAmount" placeholder="Amount" required />
+      <input type="number" id="pricePerHead" placeholder="Price per Head" required />
+      <input type="number" id="payment" placeholder="Payment" required />
       <button type="submit">Save Order</button>
     </form>
   </div>
 
-  <div id="readonly" class="tab">
-    <h2>Read-Only Data</h2>
-
-    <h3>Expenses</h3>
+  <div id="view" class="tab" style="display:none">
+    <h2>Expenses</h2>
     <table id="expensesTable">
       <thead>
         <tr><th>Product</th><th>Amount</th><th>Price</th><th>Total</th><th>Actions</th></tr>
@@ -64,29 +57,23 @@
       <tfoot></tfoot>
     </table>
 
-    <h3>Head Count</h3>
+    <h2>Head Count</h2>
     <table id="headCountTable">
       <thead>
-        <tr><th>Starting</th><th>Casualties</th></tr>
+        <tr><th>Starting</th><th>Casualties</th><th>Actions</th></tr>
       </thead>
       <tbody></tbody>
     </table>
 
-    <h3>Customer Orders</h3>
+    <h2>Customer Orders</h2>
     <table id="ordersTable">
       <thead>
-<tr>
-  <th>Name</th>
-  <th>Location</th>
-  <th>Amount</th>
-  <th>Price/Head</th>
-  <th>Payment</th>
-  <th>Balance</th>
-  <th>Actions</th>
-</tr>
-       </thead>
+        <tr><th>Name</th><th>Location</th><th>Amount</th><th>Price/Head</th><th>Payment</th><th>Balance</th><th>Actions</th></tr>
+      </thead>
       <tbody></tbody>
     </table>
   </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
