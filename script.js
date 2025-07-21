@@ -9,9 +9,9 @@ function showTab(tabId) {
   if (tabId === 'view') renderTables();
 }
 
-// Expense
+// EXPENSES
 const expensesForm = document.getElementById('expensesForm');
-expensesForm.addEventListener('submit', function(e) {
+expensesForm.addEventListener('submit', function (e) {
   e.preventDefault();
   const product = document.getElementById('productName').value;
   const amount = parseFloat(document.getElementById('amount').value);
@@ -35,9 +35,9 @@ function editExpense(index) {
   showTab('expenses');
 }
 
-// Head Count
+// HEAD COUNT
 const headCountForm = document.getElementById('headCountForm');
-headCountForm.addEventListener('submit', function(e) {
+headCountForm.addEventListener('submit', function (e) {
   e.preventDefault();
   headCount.starting = parseInt(document.getElementById('starting').value);
   headCount.casualties = parseInt(document.getElementById('casualties').value);
@@ -50,22 +50,26 @@ function editHeadCount() {
   showTab('expenses');
 }
 
-// Orders
+// CUSTOMER ORDERS
 const ordersForm = document.getElementById('ordersForm');
-ordersForm.addEventListener('submit', function(e) {
+ordersForm.addEventListener('submit', function (e) {
   e.preventDefault();
   const name = document.getElementById('customerName').value;
   const location = document.getElementById('location').value;
   const amount = parseInt(document.getElementById('orderAmount').value);
   const pricePerHead = parseFloat(document.getElementById('pricePerHead').value);
   const payment = parseFloat(document.getElementById('payment').value);
+
+  const order = { name, location, amount, pricePerHead, payment };
+
   if (editOrderIndex !== null) {
-    orders[editOrderIndex] = { name, location, amount, pricePerHead, payment };
+    orders[editOrderIndex] = order;
     editOrderIndex = null;
     document.getElementById('editOrder').style.display = 'none';
   } else {
-    orders.push({ name, location, amount, pricePerHead, payment });
+    orders.push(order);
   }
+
   ordersForm.reset();
   renderTables();
 });
@@ -77,6 +81,7 @@ function editOrder(index) {
   document.getElementById('orderAmount').value = order.amount;
   document.getElementById('pricePerHead').value = order.pricePerHead;
   document.getElementById('payment').value = order.payment;
+
   editOrderIndex = index;
   document.getElementById('editOrder').style.display = 'block';
   showTab('orders');
@@ -93,28 +98,32 @@ function deleteOrder(index) {
   renderTables();
 }
 
+// RENDER DATA
 function renderTables() {
-  // Expenses Table
+  // Expenses
   const expensesBody = document.querySelector('#expensesTable tbody');
   const expensesFoot = document.querySelector('#expensesTable tfoot');
   expensesBody.innerHTML = '';
-  let total = 0;
+  let totalExpenses = 0;
   expenses.forEach((exp, i) => {
-    const t = exp.amount * exp.price;
-    total += t;
+    const total = exp.amount * exp.price;
+    totalExpenses += total;
     expensesBody.innerHTML += `
       <tr>
         <td>${exp.product}</td>
         <td>${exp.amount}</td>
-        <td>${exp.price}</td>
-        <td>${t.toFixed(2)}</td>
-        <td><button onclick="editExpense(${i})">Edit</button><button onclick="deleteExpense(${i})">Delete</button></td>
+        <td>${exp.price.toFixed(2)}</td>
+        <td>${total.toFixed(2)}</td>
+        <td>
+          <button onclick="editExpense(${i})">Edit</button>
+          <button onclick="deleteExpense(${i})">Delete</button>
+        </td>
       </tr>
     `;
   });
-  expensesFoot.innerHTML = `<tr><td colspan="3"><strong>Total:</strong></td><td colspan="2">${total.toFixed(2)}</td></tr>`;
+  expensesFoot.innerHTML = `<tr><td colspan="3"><strong>Total:</strong></td><td colspan="2">${totalExpenses.toFixed(2)}</td></tr>`;
 
-  // Head Count and Orders Summary
+  // Headcount Summary
   const totalOrders = orders.reduce((sum, o) => sum + o.amount, 0);
   const remaining = headCount.starting - headCount.casualties - totalOrders;
   document.getElementById('viewStarting').textContent = headCount.starting;
@@ -126,18 +135,21 @@ function renderTables() {
   const ordersBody = document.querySelector('#ordersTable tbody');
   ordersBody.innerHTML = '';
   orders.forEach((order, i) => {
-    const total = order.amount * order.pricePerHead;
-    const balance = total - order.payment;
+    const totalPrice = order.amount * order.pricePerHead;
+    const balance = totalPrice - order.payment;
     const status = balance <= 0 ? 'Fully Paid' : balance.toFixed(2);
     ordersBody.innerHTML += `
       <tr>
         <td>${order.name}</td>
         <td>${order.location}</td>
         <td>${order.amount}</td>
-        <td>${order.pricePerHead}</td>
-        <td>${order.payment}</td>
+        <td>${order.pricePerHead.toFixed(2)}</td>
+        <td>${order.payment.toFixed(2)}</td>
         <td>${status}</td>
-        <td><button onclick="editOrder(${i})">Edit</button><button onclick="deleteOrder(${i})">Delete</button></td>
+        <td>
+          <button onclick="editOrder(${i})">Edit</button>
+          <button onclick="deleteOrder(${i})">Delete</button>
+        </td>
       </tr>
     `;
   });
