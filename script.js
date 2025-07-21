@@ -98,18 +98,32 @@ function updateTables() {
   expenseBody.innerHTML = '';
   let total = 0;
   expenses.forEach((e, index) => {
+    totalOrdered += o.orderAmount;
     total += e.amount * e.price;
     expenseBody.innerHTML += `
-      <tr>
-        <td>${e.product}</td>
-        <td>${e.amount}</td>
-        <td>${e.price}</td>
-        <td>${(e.amount * e.price).toFixed(2)}</td>
-        <td>
-          <button onclick="editExpense(${index})">Edit</button>
-          <button onclick="deleteExpense(${index})">Delete</button>
-        </td>
-      </tr>`;
+      orderBody.innerHTML += `
+  <tr>
+    <td>${o.name}</td>
+    <td>${o.location}</td>
+    <td>${o.orderAmount}</td>
+    <td>${o.pricePerHead}</td>
+    <td>${o.payment}</td>
+    <td>${
+      (o.orderAmount * o.pricePerHead - o.payment) <= 0
+        ? "Fully Paid"
+        : (o.orderAmount * o.pricePerHead - o.payment).toFixed(2)
+    }</td>
+    <td>
+      <button onclick="editOrder(${index})">Edit</button>
+      <button onclick="deleteOrder(${index})">Delete</button>
+    </td>
+  </tr>`;
+  if (document.getElementById('totalOrdered')) {
+  document.getElementById('totalOrdered').innerText = totalOrdered;
+
+  const remaining = (headCount.start || 0) - (headCount.casualties || 0) - totalOrdered;
+  document.getElementById('remainingChickens').innerText = remaining >= 0 ? remaining : 0;
+}
   });
   document.querySelector('#expensesTable tfoot').innerHTML = `<tr><td colspan="5"><strong>Total: ${total.toFixed(2)}</strong></td></tr>`;
 
