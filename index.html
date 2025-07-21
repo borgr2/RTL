@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chicken Inventory</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chicken Inventory App</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .tab { display: none; }
+    nav button { margin-right: 10px; padding: 10px; }
+    form div { margin: 10px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table, th, td { border: 1px solid black; }
+    th, td { padding: 8px; text-align: center; }
+    button { padding: 5px 10px; margin: 2px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+  </style>
 </head>
 <body>
   <nav>
@@ -16,60 +25,53 @@
   <div id="expenses" class="tab">
     <h2>Expenses</h2>
     <form id="expensesForm">
-      <input id="productName" placeholder="Product Name" required />
-      <input type="number" id="amount" placeholder="Amount" required />
-      <input type="number" id="price" placeholder="Price" required />
+      <div><label>Product Name: <input type="text" id="productName" required></label></div>
+      <div><label>Amount: <input type="number" id="amount" required></label></div>
+      <div><label>Price: <input type="number" id="price" required></label></div>
       <button type="submit">Save Expense</button>
     </form>
 
     <h2>Head Count</h2>
     <form id="headCountForm">
-      <input type="number" id="starting" placeholder="Starting Count" required />
-      <input type="number" id="casualties" placeholder="Casualties" required />
+      <div><label>Starting: <input type="number" id="starting" required></label></div>
+      <div><label>Casualties: <input type="number" id="casualties" required></label></div>
       <button type="submit">Save Head Count</button>
     </form>
-
     <div id="headSummary">
       <p><strong>Total Ordered:</strong> <span id="totalOrdered">0</span></p>
       <p><strong>Remaining Chickens:</strong> <span id="remainingChickens">0</span></p>
     </div>
   </div>
 
-  <div id="orders" class="tab" style="display:none">
-    <h2>Customer Order</h2>
+  <div id="orders" class="tab">
+    <h2>Customer Orders</h2>
     <form id="ordersForm">
-      <input id="customerName" placeholder="Customer Name" required />
-      <input id="location" placeholder="Location" required />
-      <input type="number" id="orderAmount" placeholder="Amount" required />
-      <input type="number" id="pricePerHead" placeholder="Price per Head" required />
-      <input type="number" id="payment" placeholder="Payment" required />
+      <div><label>Customer Name: <input type="text" id="customerName" required></label></div>
+      <div><label>Location: <input type="text" id="location" required></label></div>
+      <div><label>Order Amount: <input type="number" id="orderAmount" required></label></div>
+      <div><label>Price per Head: <input type="number" id="pricePerHead" required></label></div>
+      <div><label>Payment: <input type="number" id="payment" required></label></div>
       <button type="submit">Save Order</button>
     </form>
   </div>
 
-  <div id="view" class="tab" style="display:none">
+  <div id="view" class="tab">
     <h2>Expenses</h2>
     <table id="expensesTable">
-      <thead>
-        <tr><th>Product</th><th>Amount</th><th>Price</th><th>Total</th><th>Actions</th></tr>
-      </thead>
+      <thead><tr><th>Product</th><th>Amount</th><th>Price</th><th>Total</th><th>Actions</th></tr></thead>
       <tbody></tbody>
       <tfoot></tfoot>
     </table>
 
-    <h2>Head Count</h2>
+    <h2>Head Count and Orders</h2>
     <table id="headCountTable">
-      <thead>
-        <tr><th>Starting</th><th>Casualties</th><th>Actions</th></tr>
-      </thead>
+      <thead><tr><th>Starting</th><th>Casualties</th><th>Orders</th><th>Remaining</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
 
     <h2>Customer Orders</h2>
     <table id="ordersTable">
-      <thead>
-        <tr><th>Name</th><th>Location</th><th>Amount</th><th>Price/Head</th><th>Payment</th><th>Balance</th><th>Actions</th></tr>
-      </thead>
+      <thead><tr><th>Name</th><th>Location</th><th>Amount</th><th>Price/Head</th><th>Payment</th><th>Balance</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
